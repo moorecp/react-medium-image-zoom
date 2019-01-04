@@ -23,7 +23,8 @@ export default class Zoom extends Component {
       hasLoaded: false,
       isZoomed: true,
       src: props.image.currentSrc || props.image.src,
-      tmpSrc: null
+      tmpSrc: null,
+      zoomedImg: null
     }
 
     this.unzoom = this.unzoom.bind(this)
@@ -82,7 +83,10 @@ export default class Zoom extends Component {
   _handleImageLoad(img) {
     // Only set state if component is still mounted
     if (this.state.isZoomed) {
-      this.setState({ tmpSrc: img.currentSrc || img.src })
+      this.setState({
+        tmpSrc: img.currentSrc || img.src,
+        zoomedImg: img
+      })
     }
   }
 
@@ -95,7 +99,11 @@ export default class Zoom extends Component {
   }
 
   _getZoomImageStyle() {
-    const { image, shouldRespectMaxDimension, src, zoomMargin } = this.props
+    const { shouldRespectMaxDimension, src, zoomMargin } = this.props
+    let { image } = this.props
+    if (this.state.isZoomed && this.state.zoomedImg !== null) {
+      image = this.state.zoomedImg
+    }
     const imageOffset = image.getBoundingClientRect()
 
     const { top, left } = imageOffset

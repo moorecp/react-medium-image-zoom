@@ -930,7 +930,8 @@ var Zoom = function (_Component) {
       hasLoaded: false,
       isZoomed: true,
       src: props.image.currentSrc || props.image.src,
-      tmpSrc: null
+      tmpSrc: null,
+      zoomedImg: null
     };
 
     _this.unzoom = _this.unzoom.bind(_this);
@@ -991,7 +992,10 @@ var Zoom = function (_Component) {
     value: function _handleImageLoad(img) {
       // Only set state if component is still mounted
       if (this.state.isZoomed) {
-        this.setState({ tmpSrc: img.currentSrc || img.src });
+        this.setState({
+          tmpSrc: img.currentSrc || img.src,
+          zoomedImg: img
+        });
       }
     }
   }, {
@@ -1003,19 +1007,23 @@ var Zoom = function (_Component) {
     key: '_getZoomImageStyle',
     value: function _getZoomImageStyle() {
       var _props2 = this.props,
-          image = _props2.image,
           shouldRespectMaxDimension = _props2.shouldRespectMaxDimension,
           src = _props2.src,
           zoomMargin = _props2.zoomMargin;
+      var image = this.props.image;
 
+      if (this.state.isZoomed && this.state.zoomedImg !== null) {
+        image = this.state.zoomedImg;
+      }
       var imageOffset = image.getBoundingClientRect();
 
       var top = imageOffset.top,
           left = imageOffset.left;
-      var width = image.width,
-          height = image.height,
-          naturalWidth = image.naturalWidth,
-          naturalHeight = image.naturalHeight;
+      var _image = image,
+          width = _image.width,
+          height = _image.height,
+          naturalWidth = _image.naturalWidth,
+          naturalHeight = _image.naturalHeight;
 
       var style = { top: top, left: left, width: width, height: height };
 
